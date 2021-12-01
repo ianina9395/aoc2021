@@ -6,12 +6,9 @@ object Day01 extends App {
     Source.fromResource(filename).getLines.map(_.toInt).toSeq
 
   def countIncrements(measurements: Seq[Int]): Int = {
-    measurements.zipWithIndex.tail.map { case (m, i) =>
-      if (m > measurements(i - 1))
-        1
-      else
-        0
-    }.sum
+    measurements.zipWithIndex.tail.count { case (m, i) =>
+      m > measurements(i - 1)
+    }
   }
 
   def countIncrementsWindows(measurements: Seq[Int]): Int = {
