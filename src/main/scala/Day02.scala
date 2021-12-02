@@ -34,7 +34,6 @@ object Day02 extends App {
       }
       .toSeq
 
-  @tailrec
   def run(start: Position, steps: Seq[(String, Int)]): Position = {
 
     def step(pos: Position, dir: (String, Int)): Position = {
@@ -48,12 +47,7 @@ object Day02 extends App {
       }
     }
 
-    steps match {
-      case head :: tail =>
-        run(step(start, head), tail)
-      case Nil =>
-        start
-    }
+    steps.foldLeft(start)((pos, dir) => step(pos, dir))
   }
 
   val items: Seq[(String, Int)] = readFile("input_02")
