@@ -8,7 +8,7 @@ class Board(numbers: Array[Array[Num]]) {
 
   private def checkWinning: Boolean = {
     numbers.exists(r => r.count(_.marked) == r.length) ||
-      numbers.transpose.exists(r => r.count(_.marked) == r.length)
+    numbers.transpose.exists(r => r.count(_.marked) == r.length)
   }
 
   def markIfFound(num: Int): Unit = {
@@ -33,7 +33,9 @@ object Day04 extends App {
     val numbers = f.head.split(",").map(_.toInt).toSeq
     val boards = f.tail.map { b =>
       val rows = b.split("\n")
-      new Board(rows.map(_.split(" ").filterNot(_.isEmpty).map(s => Num(s.toInt))))
+      new Board(
+        rows.map(_.split(" ").filterNot(_.isEmpty).map(s => Num(s.toInt)))
+      )
     }
     numbers -> boards
   }
