@@ -30,24 +30,22 @@ object Day08 extends App {
         s2.toCharArray.toSet.subsetOf(s1.toCharArray.toSet)
       }
 
+      val pOfLen = patterns.groupBy(_.length)
       val codes = mutable.Map[Int, String]()
-      codes.put(1, patterns.find(_.length == 2).get)
-      codes.put(4, patterns.find(_.length == 4).get)
-      codes.put(7, patterns.find(_.length == 3).get)
-      codes.put(8, patterns.find(_.length == 7).get)
+      codes.put(1, pOfLen(2).head)
+      codes.put(4, pOfLen(4).head)
+      codes.put(7, pOfLen(3).head)
+      codes.put(8, pOfLen(7).head)
 
-      val pLen5 = patterns.filter(_.length == 5)
-      val pLen6 = patterns.filter(_.length == 6)
-
-      codes.put(3, pLen5.find(s => contains(s, codes(7))).get)
-      codes.put(9, pLen6.find(s => contains(s, codes(3))).get)
+      codes.put(3, pOfLen(5).find(s => contains(s, codes(7))).get)
+      codes.put(9, pOfLen(6).find(s => contains(s, codes(3))).get)
       codes.put(
         0,
-        pLen6.find(s => contains(s, codes(7)) && !contains(s, codes(3))).get
+        pOfLen(6).find(s => contains(s, codes(7)) && !contains(s, codes(3))).get
       )
-      codes.put(6, pLen6.find(s => s != codes(0) && s != codes(9)).get)
-      codes.put(5, pLen5.find(s => contains(codes(6), s)).get)
-      codes.put(2, pLen5.find(s => s != codes(5) && s != codes(3)).get)
+      codes.put(6, pOfLen(6).find(s => s != codes(0) && s != codes(9)).get)
+      codes.put(5, pOfLen(5).find(s => contains(codes(6), s)).get)
+      codes.put(2, pOfLen(5).find(s => s != codes(5) && s != codes(3)).get)
 
       digits
         .flatMap(d =>
