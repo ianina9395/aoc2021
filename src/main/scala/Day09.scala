@@ -29,7 +29,6 @@ object Day09 extends App {
       .getLines
       .map(_.split("").map(_.toInt).toSeq)
       .toSeq
-    println(d)
     HeightMap(d)
   }
 
@@ -47,25 +46,25 @@ object Day09 extends App {
     }.sum
   }
 
-  def part2(input: HeightMap) = {
+  def part2(input: HeightMap): Int = {
 
-    def findResin(center: (Int, Int)): Int = {
+    def findBasin(center: (Int, Int)): Int = {
       val queue = mutable.Queue[(Int, Int)]()
       queue.enqueue(center)
 
-      val resin = mutable.Set[(Int, Int)]()
+      val basin = mutable.Set[(Int, Int)]()
       while (queue.nonEmpty) {
         val (i, j) = queue.dequeue()
-        resin.add(i, j)
+        basin.add(i, j)
         val adj = input.adj(i, j).filter { case (i, j) =>
           input.data(i)(j) < 9
         }
-        queue.enqueueAll(adj.filterNot { i => resin.contains(i) })
+        queue.enqueueAll(adj.filterNot { i => basin.contains(i) })
       }
-      resin.size
+      basin.size
     }
 
-    findLowPoints(input).map(findResin).sorted.reverse.take(3).product
+    findLowPoints(input).map(findBasin).sorted.reverse.take(3).product
   }
 
   val sample = readFile("sample_09")
