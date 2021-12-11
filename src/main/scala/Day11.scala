@@ -25,15 +25,15 @@ class OctopusMap(var data: Array[Array[Int]]) {
   def runStep(): Int = {
 
     def runFlashes(): Int = {
-      val flushing = allPoints.filter(isFlashing)
-      flushing.foreach(p => data(p.r)(p.c) = 0)
-      flushing.size
+      val flashing = allPoints.filter(isFlashing)
+      flashing.foreach(p => data(p.r)(p.c) = 0)
+      flashing.size
     }
 
-    def incEnergy(flushing: Seq[MapPoint]): Boolean = {
-      val toBeInc = flushing
+    def incEnergy(flashing: Seq[MapPoint]): Boolean = {
+      val toBeInc = flashing
         .flatMap(adj)
-        .filterNot(flushing.contains)
+        .filterNot(flashing.contains)
 
       toBeInc.foreach(p => data(p.r)(p.c) += 1)
       toBeInc.exists(isFlashing)
@@ -41,16 +41,16 @@ class OctopusMap(var data: Array[Array[Int]]) {
 
     data = data.map(_.map { p => p + 1 })
 
-    var flushed = Set[MapPoint]()
-    var toBeFlushed = false
+    var flashed = Set[MapPoint]()
+    var toBeFlashed = false
     do {
-      val flushing = allPoints
+      val flashing = allPoints
         .filter(isFlashing)
-        .filterNot(flushed.contains)
+        .filterNot(flashed.contains)
 
-      flushed ++= flushing
-      toBeFlushed = incEnergy(flushing)
-    } while (toBeFlushed)
+      flashed ++= flashing
+      toBeFlashed = incEnergy(flashing)
+    } while (toBeFlashed)
 
     runFlashes()
   }
