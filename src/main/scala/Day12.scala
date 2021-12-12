@@ -33,33 +33,32 @@ object Day12 extends App {
 
   def part2(input: Seq[Node]): Int = {
 
-    def countVisits(path: Seq[String]): Map[String, Int] =
-      path.filter(isSmallCave).groupMapReduce(identity)(_ => 1)(_ + _)
-
-    def dfs(input: Seq[Node], path: Seq[String], cur: String): Int = {
+    def dfs(input: Seq[Node], path: Seq[String], cur: String, counts: Map[String, Int]): Int = {
       if (cur == "end") {
-        val visitedTwice = countVisits(path).values.count(_ == 2)
-        if (visitedTwice == 1 || visitedTwice == 0) 1 else 0
-      } else if (cur == "start" && path.contains("start")) {
+        1
+      } else if (cur == "start" && counts.contains("start")) {
         0
       } else {
-        val counts = countVisits(path)
-        if (counts.values.count(_ == 2) > 1) {
-          return 0
-        }
-
         val next = input
           .filter { n =>
             val timesVisited = counts.getOrElse(n.to, 0)
-            n.from == cur && (timesVisited == 1 || timesVisited == 0)
+            n.from == cur && timesVisited <= 1
           }
           .map(_.to)
 
-        next.map(n => dfs(input, path :+ cur, n)).sum
+        val newCounts = if (isSmallCave(cur)) {
+          counts.updated(cur, counts.getOrElse(cur, 0) + 1)
+        } else counts
+
+        if (newCounts.values.count(_ == 2) > 1) {
+          0
+        } else {
+          next.map(n => dfs(input, path :+ cur, n, newCounts)).sum
+        }
       }
     }
 
-    dfs(input, Seq.empty, "start")
+    dfs(input, Seq.empty, "start", Map.empty)
   }
 
   val sample1 = readFile("sample_12_1")
