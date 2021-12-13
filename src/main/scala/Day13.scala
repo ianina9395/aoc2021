@@ -23,7 +23,7 @@ object Day13 extends App {
     )
   }
 
-  private def fold(p: Coord, fold: Fold): Coord = {
+  private def doFold(p: Coord, fold: Fold): Coord = {
     def foldByY(p: Coord, y: Int): Coord = {
       if (p.y < y) p
       else Coord(p.x, 2 * y - p.y)
@@ -42,27 +42,23 @@ object Day13 extends App {
 
   def part1(input: Seq[Coord], folds: Seq[Fold]): Int = {
     val firstFold = folds.head
-    input.map(p => fold(p, firstFold)).distinctBy(identity).size
+    input.map(p => doFold(p, firstFold)).distinctBy(identity).size
   }
 
   def part2(input: Seq[Coord], folds: Seq[Fold]): Unit = {
+
+    def range(coords: Iterable[Int]): Range = Range(coords.min, coords.max)
+
     val points = folds
-      .foldLeft(input)((points, f) => points.map(p => fold(p, f)))
+      .foldLeft(input)((points, f) => points.map(p => doFold(p, f)))
       .distinctBy(identity)
 
     val rows = points.groupBy(_.y)
-    val (yMin, yMax) = {
-      val allY = rows.keys
-      (allY.min, allY.max)
-    }
+    val yRange = range(rows.keys)
+    val xRange = range(rows.flatMap { case (_, points) => points.map(_.x) })
 
-    val (xMin, xMax) = {
-      val allX = rows.flatMap(_._2.map(_.x))
-      (allX.min, allX.max)
-    }
-
-    for (y <- yMin to yMax) {
-      val row = (xMin to xMax).map { x =>
+    for (y <- yRange) {
+      val row = xRange.map { x =>
         if (points.contains(Coord(x, y)))
           "#"
         else
