@@ -23,7 +23,11 @@ object Day12 extends App {
         1
       } else {
         val next =
-          input.filter(n => n.from == cur && (!isSmallCave(n.to) || !path.contains(n.to))).map(_.to)
+          input
+            .filter(n =>
+              n.from == cur && (!isSmallCave(n.to) || !path.contains(n.to))
+            )
+            .map(_.to)
         next.map(n => dfs(input, path :+ cur, n)).sum
       }
     }
@@ -33,7 +37,12 @@ object Day12 extends App {
 
   def part2(input: Seq[Node]): Int = {
 
-    def dfs(input: Seq[Node], path: Seq[String], cur: String, counts: Map[String, Int]): Int = {
+    def dfs(
+        input: Seq[Node],
+        path: Seq[String],
+        cur: String,
+        counts: Map[String, Int]
+    ): Int = {
       if (cur == "end") {
         1
       } else if (cur == "start" && counts.contains("start")) {
