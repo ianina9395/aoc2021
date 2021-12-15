@@ -25,13 +25,21 @@ object Day15 extends App {
   }
 
   def readFile(filename: String): RiskMap =
-    RiskMap(Source.fromResource(filename).getLines.map(_.split("").map(_.toInt).toSeq).toSeq)
+    RiskMap(
+      Source
+        .fromResource(filename)
+        .getLines
+        .map(_.split("").map(_.toInt).toSeq)
+        .toSeq
+    )
 
   def dijkstra(input: RiskMap): Int = {
     val start = Pos(0, 0)
     val end = Pos(input.rows - 1, input.cols - 1)
 
-    val queue = mutable.PriorityQueue[(Pos, Int)]()(Ordering.by((_: (Pos, Int))._2).reverse)
+    val queue = mutable.PriorityQueue[(Pos, Int)]()(
+      Ordering.by((_: (Pos, Int))._2).reverse
+    )
     val weights = mutable.Map[Pos, Int]()
     val visited = mutable.Set[Pos]()
 
@@ -63,7 +71,6 @@ object Day15 extends App {
     -1
   }
 
-
   def part1(input: RiskMap): Int = {
     dijkstra(input)
   }
@@ -74,7 +81,9 @@ object Day15 extends App {
       val data =
         (0 until 5 * input.rows).map { i =>
           (0 until 5 * input.cols).map { j =>
-            val value = input.data(i % input.rows)(j % input.cols) + i / input.rows + j / input.cols
+            val value = input.data(i % input.rows)(
+              j % input.cols
+            ) + i / input.rows + j / input.cols
             if (value > 9) {
               if (value % 9 == 0) 9 else value % 9
             } else {
