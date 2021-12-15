@@ -41,7 +41,6 @@ object Day15 extends App {
       Ordering.by((_: (Pos, Int))._2).reverse
     )
     val weights = mutable.Map[Pos, Int]()
-    val visited = mutable.Set[Pos]()
 
     queue.enqueue(start -> 0)
     weights += start -> 0
@@ -53,13 +52,13 @@ object Day15 extends App {
 
     while (queue.nonEmpty) {
       val (pos, w) = queue.dequeue()
-      visited += pos
+      weights.remove(pos)
 
       if (pos == end) {
         return w
       }
 
-      val adj = input.adj(pos).filter(!visited.contains(_))
+      val adj = input.adj(pos).filter(weights.contains)
       adj.foreach { n =>
         val newWeight = w + input.data(n.r)(n.c)
         if (newWeight < weights(n)) {
@@ -81,14 +80,9 @@ object Day15 extends App {
       val data =
         (0 until 5 * input.rows).map { i =>
           (0 until 5 * input.cols).map { j =>
-            val value = input.data(i % input.rows)(
-              j % input.cols
-            ) + i / input.rows + j / input.cols
-            if (value > 9) {
-              if (value % 9 == 0) 9 else value % 9
-            } else {
-              value
-            }
+            val inputValue = input.data(i % input.rows)(j % input.cols)
+            val value = inputValue + i / input.rows + j / input.cols
+            if (value % 9 == 0) 9 else value % 9
           }
         }
       RiskMap(data)
